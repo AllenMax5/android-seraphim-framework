@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <remote name="origin"
+        fetch="git@github.com:li-lance/" />
+    <default revision="master"
+        remote="origin"
+        sync-j="4" />
+<!--    <project name="android-seraphim-music.git" path="." revision="master" />-->
+    <project name="build-logic.git" path="build-logic" revision="master"/>
+    <project name="gradle.git" path="gradle" revision="master"/>
+    <project name="utils.git" path="utils" revision="master"/>
+    <project name="permissions.git" path="core/permissions" revision="master" />
+</manifest>
