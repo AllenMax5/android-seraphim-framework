@@ -26,8 +26,9 @@ rootProject.name = "android-seraphim-framework"
 include(":apps:delicacies")
 //include(":domain")
 include(":utils")
-include(":core:permissions")
+include(":core:permissions",":core:network")
 include(":shareds:delicacies")
+include(":domain:scaffolding-delicacies")
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """
