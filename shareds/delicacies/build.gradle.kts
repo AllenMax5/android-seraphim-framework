@@ -40,7 +40,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.okhttp.logging)
-
+            implementation(libs.koin.android)
         }
         nativeMain.dependencies {
             implementation(libs.ktor.client.darwin)

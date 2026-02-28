@@ -68,6 +68,10 @@ dependencies {
     implementation(libs.mmkv.kotlin)
     implementation(libs.calendar)
     implementation(libs.androidx.work.ktx)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.kotlinx.datetime)
 //    implementation(libs.molecule.runtime)
 }
 baselineProfile {

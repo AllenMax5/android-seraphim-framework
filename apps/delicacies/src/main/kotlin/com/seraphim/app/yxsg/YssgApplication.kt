@@ -1,6 +1,10 @@
 package com.seraphim.app.yxsg
 
 import android.app.Application
+import com.seraphim.app.yxsg.di.appModule
+import com.seraphim.app.yxsg.worker.WorkManagerScheduler
+import com.seraphim.delicacies.shared.di.sharedModule
+import com.seraphim.delicacies.shared.di.sharedPlatformModule
 import com.seraphim.utils.initLogger
 import com.seraphim.utils.initMMKV
 import org.koin.android.ext.koin.androidContext
@@ -15,23 +19,9 @@ class YssgApplication : Application() {
         startKoin {
             androidLogger()
             androidContext(this@YssgApplication)
-//            modules(appModule + sharedModule + domainModule)
+            modules(appModule, sharedModule, sharedPlatformModule)
         }
-//        notificationWorkManager()
+        // Schedule daily meal reminder notifications
+        WorkManagerScheduler.schedule(this)
     }
-
-//    val dailyWorkRequest = PeriodicWorkRequestBuilder<DailyNotifyWorker>(
-//        1, TimeUnit.DAYS
-//    )
-//        .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS) // 可选：定点触发
-//        .build()
-
-//    private fun notificationWorkManager() {
-//
-//        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-//            "daily_notify",
-//            ExistingPeriodicWorkPolicy.KEEP,
-//            dailyWorkRequest
-//        )
-//    }
 }
