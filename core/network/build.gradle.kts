@@ -1,4 +1,5 @@
 import com.seraphim.plugin.compileSdkVersion
+import com.seraphim.plugin.minSdkVersion
 
 plugins {
     alias(libs.plugins.seraphim.kotlin.multiplatform.library)
@@ -6,11 +7,12 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 //    alias(libs.plugins.skie)
 }
-android {
-    namespace = "com.seraphim.core.network"
-    compileSdk = project.compileSdkVersion
-}
 kotlin {
+    androidLibrary {
+        namespace = "com.seraphim.core.network"
+        compileSdk = project.compileSdkVersion
+        minSdk = project.minSdkVersion
+    }
     sourceSets {
         all {
             languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")

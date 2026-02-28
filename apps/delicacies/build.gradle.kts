@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.seraphim.android.application)
     alias(libs.plugins.seraphim.android.application.compose)
@@ -81,4 +80,8 @@ baselineProfile {
 
     // Make use of Dex Layout Optimizations via Startup Profiles
     dexLayoutOptimization = true
+
+    warnings {
+        maxAgpVersion = false
+    }
 }
