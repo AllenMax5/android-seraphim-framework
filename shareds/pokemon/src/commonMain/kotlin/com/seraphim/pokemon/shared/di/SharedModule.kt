@@ -1,15 +1,15 @@
 package com.seraphim.pokemon.shared.di
 
 import com.seraphim.pokemon.shared.data.db.PokemonDatabase
-import com.seraphim.pokemon.shared.data.network.HttpClientFactory
 import com.seraphim.pokemon.shared.data.network.PokeApiService
+import com.seraphim.pokemon.shared.data.network.PokeHttpClientFactory
 import com.seraphim.pokemon.shared.data.repository.PokemonRepository
 import com.seraphim.pokemon.shared.data.repository.PokemonRepositoryImpl
 import org.koin.dsl.module
 
 val sharedModule = module {
     // ─── Network ────────────────────────────────────────────────
-    single { HttpClientFactory.create() }
+    single { PokeHttpClientFactory.create() }
     single { PokeApiService(get()) }
 
     // ─── DAOs ───────────────────────────────────────────────────
