@@ -21,6 +21,7 @@ kotlin {
             dependencies {
                 implementation(project(":utils"))
                 implementation(project(":core:network"))
+                implementation(project(":core:storage"))
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization.json)
@@ -29,8 +30,6 @@ kotlin {
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.client.logging)
                 implementation(libs.koin.core)
-                implementation(libs.room.runtime)
-                implementation(libs.sqlite.bundled)
                 implementation(libs.slf4j.api)
                 implementation(libs.androidx.paging.common)
             }
