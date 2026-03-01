@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.seraphim.android.application.jacoco)
 //    alias(libs.plugins.seraphim.android.application.firebase)
     alias(libs.plugins.seraphim.koin)
-    alias(libs.plugins.baselineprofile)
+//    alias(libs.plugins.baselineprofile) // TODO: Re-enable when Baseline Profile plugin supports AGP 9.0
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -73,15 +73,16 @@ dependencies {
     implementation(libs.kotlinx.datetime)
 //    implementation(libs.molecule.runtime)
 }
-baselineProfile {
-    // Don't build on every iteration of a full assemble.
-    // Instead enable generation directly for the release build variant.
-    automaticGenerationDuringBuild = false
-
-    // Make use of Dex Layout Optimizations via Startup Profiles
-    dexLayoutOptimization = true
-
-    warnings {
-        maxAgpVersion = false
-    }
-}
+// TODO: Re-enable when Baseline Profile plugin supports AGP 9.0
+//baselineProfile {
+//    // Don't build on every iteration of a full assemble.
+//    // Instead enable generation directly for the release build variant.
+//    automaticGenerationDuringBuild = false
+//
+//    // Make use of Dex Layout Optimizations via Startup Profiles
+//    dexLayoutOptimization = true
+//
+//    warnings {
+//        maxAgpVersion = false
+//    }
+//}
