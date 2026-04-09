@@ -28,10 +28,12 @@ dependencyResolutionManagement {
 rootProject.name = "android-seraphim-framework"
 include(":apps:delicacies")
 include(":apps:pokemon")
+include(":apps:literacy-eval")
 include(":utils")
 include(":core:permissions", ":core:network", ":core:storage")
 include(":shareds:delicacies")
 include(":shareds:pokemon")
+include(":shareds:literacy")
 
 check(JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
     """
