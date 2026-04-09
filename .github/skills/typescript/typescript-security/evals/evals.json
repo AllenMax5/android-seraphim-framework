@@ -1,0 +1,55 @@
+{
+  "skill_name": "typescript-security",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Validate the request body of a user registration endpoint in a TypeScript Express API.",
+      "expected_output": "Use Zod at the API boundary: const schema = z.object({ email: z.string().email(), password: z.string().min(8) }). Use safeParse for error handling: const result = schema.safeParse(req.body); if (!result.success) return res.status(400).json(result.error). Never trust req.body without validation. Type the validated data with z.infer<typeof schema>.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "Zod"
+        },
+        {
+          "type": "contains",
+          "value": "safeParse"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm building a JWT authentication flow. Where should I store the JWT secret?",
+      "expected_output": "Store JWT_SECRET in environment variables or Secret Manager (AWS Secrets Manager, HashiCorp Vault). NEVER commit to Git. Use RS256 (asymmetric) for public/private key pairs in distributed systems. Implement HttpOnly Secure cookies for token storage client-side. Add Refresh Token rotation to limit exposure window. Use jose or jsonwebtoken library.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "environment variable"
+        },
+        {
+          "type": "contains",
+          "value": "HttpOnly"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "My TypeScript API is accepting user input and building SQL queries by string concatenation.",
+      "expected_output": "SQL Injection vulnerability. Use Parameterized Queries: pool.query('SELECT * FROM users WHERE id = $1', [userId]) or Type-safe ORMs (Prisma/TypeORM). Use Prisma.sql template tag for raw queries. Never concatenate user input into query strings. Validate and sanitize all user-controlled input before any database operation.",
+      "assertions": [
+        {
+          "type": "contains",
+          "value": "Parameterized"
+        },
+        {
+          "type": "contains",
+          "value": "injection"
+        }
+      ]
+    }
+  ],
+  "should_not_trigger": [
+    "Configure ESLint rules for the project",
+    "Write a React hook for form validation",
+    "Set up Kubernetes network policies"
+  ]
+}

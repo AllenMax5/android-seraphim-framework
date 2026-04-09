@@ -1,0 +1,55 @@
+---
+name: flutter-dependency-injection
+description: "Configure automated service locator setup using injectable and get_it. Use when wiring dependency injection with injectable and get_it in Flutter. (triggers: **/injection.dart, **/locator.dart, GetIt, injectable, singleton, module, lazySingleton, factory)"
+---
+
+# Dependency Injection
+
+## **Priority: P1 (HIGH)**
+
+Automated class dependency management using `get_it` and `injectable`.
+
+## Structure
+
+```text
+core/injection/
+├── injection.dart  # Initialization & setup
+└── modules/        # Third-party dependency modules (Dio, Storage)
+```
+
+## Implementation Workflow
+
+1. **Annotate classes** — Use `@injectable` annotations; avoid manual registry calls.
+2. **Choose scope** — Default to `@LazySingleton` for repositories, services, and data sources (init
+   on demand).
+3. **Register BLoCs as factories** — Use `@injectable` (Factory) for BLoCs to ensure state resets
+   per instance. Never use `@Singleton()` for BLoCs.
+4. **Inject abstractions** — Always register implementations as abstract interfaces (
+   `as: IService`).
+5. **Register third-party deps** — Use `@module` for external instances (Dio, Hive,
+   SharedPreferences).
+6. **Prefer constructor injection** — Use mandatory constructor parameters; `injectable` resolves
+   them automatically.
+
+### Registration & Test Mock Examples
+
+See [implementation examples](references/implementation.md) for module registration and test mock
+swap patterns.
+
+## Reference & Examples
+
+For module configuration and initialization templates:
+See [references/REFERENCE.md](references/REFERENCE.md).
+
+## Anti-Patterns
+
+- ❌ `getIt<OrderRepository>()` inside widget `build()` — inject via constructor, not GetIt calls in
+  UI
+- ❌ `@Singleton()` on a BLoC — BLoCs must use `@injectable` (Factory) so state resets per instance
+- ❌ Injecting the concrete class: `OrderRepositoryImpl repo` — always inject the abstract interface
+- ❌ `getIt.registerLazySingleton<X>(() => X())` in production code — use `@injectable` annotations;
+  manual registration is only for tests
+
+## Related Topics
+
+layer-based-clean-architecture | testing

@@ -1,11 +1,6 @@
 ---
-name: Android Navigation
-description: Navigation for Android using Jetpack Compose Navigation and App Links.
-metadata:
-  labels: [android, compose, navigation, deep-linking, app-links]
-  triggers:
-    files: ['**/*Screen.kt', '**/*Activity.kt', '**/NavGraph.kt']
-    keywords: [NavController, NavHost, composable, navArgument, deepLinks]
+name: android-navigation
+description: "Implement navigation with Jetpack Compose Navigation and App Links on Android. Use when implementing navigation flows, deep links, or backstack handling in Android. (triggers: **/*Screen.kt, **/*Activity.kt, **/NavGraph.kt, NavController, NavHost, composable, navArgument, deepLinks)"
 ---
 
 # Android Navigation (Jetpack Compose)
@@ -21,14 +16,12 @@ Navigation and deep linking using Jetpack Compose Navigation.
 - **Deep Links**: Configure `intent-filter` in Manifest and `deepLinks` in NavHost.
 - **Validation**: Validate arguments (e.g., proper IDs) before loading content.
 
-[Patterns & Examples](references/navigation-patterns.md)
-
 ## Anti-Patterns
 
 - **No String Routes**: Use `Screen.Product.route` instead of `"product/$id"`.
 - **No Unvalidated Deep Links**: Check resource existence before rendering.
 - **No Missing Manifest**: Deep links require `autoVerify=true` intent filters.
 
-## Related Topics
+## References
 
-android-design-system | android-notifications | mobile-ux-core
+- [Navigation Patterns](references/navigation-patterns.md)
