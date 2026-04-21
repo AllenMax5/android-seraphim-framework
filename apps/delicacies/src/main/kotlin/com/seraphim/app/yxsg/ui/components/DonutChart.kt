@@ -3,6 +3,7 @@ package com.seraphim.app.yxsg.ui.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +25,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,8 +53,13 @@ fun DonutChart(
         label = "dinnerAngle",
     )
 
+    val a11yDescription = "本月已签到 ${stats.totalCount} 次，目标 ${stats.maxCount} 次，" +
+            "其中午餐 ${stats.lunchCount} 次，晚餐 ${stats.dinnerCount} 次"
+
     Column(
-        modifier = modifier,
+        modifier = modifier.semantics {
+            contentDescription = a11yDescription
+        },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -123,7 +131,7 @@ fun DonutChart(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Legend
+        // Legend - 使用 Box + background 替代 Canvas 绘圆，更简洁且无障碍友好
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -138,9 +146,11 @@ fun DonutChart(
 @Composable
 private fun LegendItem(color: Color, label: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Canvas(modifier = Modifier.size(12.dp)) {
-            drawCircle(color = color)
-        }
+        Box(
+            modifier = Modifier
+                .size(12.dp)
+                .background(color, CircleShape),
+        )
         Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = label,

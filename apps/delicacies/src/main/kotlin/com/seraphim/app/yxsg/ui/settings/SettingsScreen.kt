@@ -4,24 +4,25 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.FileDownload
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,11 +35,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
+import com.seraphim.app.yxsg.ui.theme.PageHorizontalPadding
+import com.seraphim.app.yxsg.ui.theme.PageVerticalPadding
+import com.seraphim.app.yxsg.ui.theme.Spacing
 import com.seraphim.app.yxsg.worker.WorkManagerScheduler
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
@@ -77,65 +81,87 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .verticalScroll(rememberScrollState())
+            .padding(vertical = PageVerticalPadding),
     ) {
+        // Page title
         Text(
             text = "设置",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp),
+            modifier = Modifier.padding(
+                horizontal = PageHorizontalPadding,
+                vertical = Spacing.large
+            ),
         )
 
-        // Notifications
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            shape = MaterialTheme.shapes.large,
-        ) {
-            Column(modifier = Modifier.padding(4.dp)) {
-                SettingsRow(
-                    icon = Icons.Rounded.Notifications,
-                    title = "每日签到提醒",
-                    subtitle = "午餐 11:30 · 晚餐 17:30",
-                    trailing = {
-                        Switch(
-                            checked = uiState.notificationsEnabled,
-                            onCheckedChange = { viewModel.toggleNotifications(it) },
-                        )
-                    },
-                )
-            }
+        // Notification group
+        SettingsGroup(title = "提醒") {
+            ListItem(
+                headlineContent = { Text("每日签到提醒") },
+                supportingContent = { Text("午餐 11:30 · 晚餐 17:30") },
+                leadingContent = {
+                    Icon(
+                        Icons.Rounded.Notifications,
+                        contentDescription = "提醒",
+                    )
+                },
+                trailingContent = {
+                    Switch(
+                        checked = uiState.notificationsEnabled,
+                        onCheckedChange = { viewModel.toggleNotifications(it) },
+                    )
+                },
+                colors = ListItemDefaults.colors(
+                    containerColor = Color.Transparent,
+                ),
+            )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Spacing.large))
 
-        // Data management
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            shape = MaterialTheme.shapes.large,
-        ) {
-            Column(modifier = Modifier.padding(4.dp)) {
-                SettingsRow(
-                    icon = Icons.Rounded.FileDownload,
-                    title = "导出签到数据",
-                    subtitle = "导出为 CSV 文件",
-                    onClick = { viewModel.exportData() },
-                )
+        // Data management group
+        SettingsGroup(title = "数据管理") {
+            ListItem(
+                headlineContent = { Text("导出签到数据") },
+                supportingContent = { Text("导出为 CSV 文件") },
+                leadingContent = {
+                    Icon(
+                        Icons.Rounded.FileDownload,
+                        contentDescription = "导出",
+                    )
+                },
+                modifier = Modifier.clickable { viewModel.exportData() },
+                colors = ListItemDefaults.colors(
+                    containerColor = Color.Transparent,
+                ),
+            )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(modifier = Modifier.padding(horizontal = PageHorizontalPadding))
 
-                SettingsRow(
-                    icon = Icons.Rounded.DeleteForever,
-                    title = "清除所有数据",
-                    subtitle = "删除全部签到记录（不可恢复）",
-                    titleColor = MaterialTheme.colorScheme.error,
-                    onClick = { showClearConfirmDialog = true },
-                )
-            }
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = "清除所有数据",
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                },
+                supportingContent = { Text("删除全部签到记录，不可恢复") },
+                leadingContent = {
+                    Icon(
+                        Icons.Rounded.DeleteForever,
+                        contentDescription = "删除",
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                },
+                modifier = Modifier.clickable { showClearConfirmDialog = true },
+                colors = ListItemDefaults.colors(
+                    containerColor = Color.Transparent,
+                ),
+            )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(Spacing.xxl))
 
         // App info
         Text(
@@ -171,43 +197,29 @@ fun SettingsScreen(
 }
 
 @Composable
-private fun SettingsRow(
-    icon: ImageVector,
+private fun SettingsGroup(
     title: String,
-    subtitle: String? = null,
-    titleColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
-    trailing: @Composable (() -> Unit)? = null,
-    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+    Column(modifier = modifier) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                horizontal = PageHorizontalPadding,
+                vertical = Spacing.small
+            ),
         )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                color = titleColor,
-            )
-            if (subtitle != null) {
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = 1.dp,
+        ) {
+            Column {
+                content()
             }
-        }
-        if (trailing != null) {
-            trailing()
         }
     }
 }

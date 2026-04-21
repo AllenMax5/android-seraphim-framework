@@ -24,7 +24,23 @@ val Gray60 = Color(0xFF9E9E9E)
 val Gray20 = Color(0xFF333333)
 val Gray10 = Color(0xFF1A1A1A)
 
-// Semantic
+// Error
+val Error80 = Color(0xFFFFB4AB)
+val Error40 = Color(0xFFBA1A1A)
+
+// Outline
+val OutlineLight = Color(0xFF757575)
+val OutlineVariantLight = Color(0xFFBDBDBD)
+val OutlineDark = Color(0xFF8A8A8A)
+val OutlineVariantDark = Color(0xFF494949)
+
+// Inverse / SurfaceTint
+val InversePrimaryLight = Color(0xFF99F2B3)
+val InversePrimaryDark = Color(0xFF66BB6A)
+val SurfaceTintLight = Green40
+val SurfaceTintDark = Green80
+
+// Semantic (App-specific)
 val LunchColor = Color(0xFF66BB6A)
 val DinnerColor = Color(0xFFFFB74D)
 val CheckedInColor = Color(0xFF4CAF50)

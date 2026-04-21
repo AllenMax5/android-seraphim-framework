@@ -16,10 +16,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.time.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
+import kotlin.time.Clock
 
 data class CheckInUiState(
     val today: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
@@ -59,6 +59,9 @@ class CheckInViewModel(
     private val _snackbarMessage = MutableSharedFlow<String>()
     val snackbarMessage = _snackbarMessage.asSharedFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+
     init {
         observeTodayRecords()
     }
@@ -74,6 +77,15 @@ class CheckInViewModel(
                     )
                 }
             }
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            // 数据已通过 Flow 响应式更新，此处仅模拟刷新状态
+            kotlinx.coroutines.delay(500)
+            _isRefreshing.value = false
         }
     }
 
