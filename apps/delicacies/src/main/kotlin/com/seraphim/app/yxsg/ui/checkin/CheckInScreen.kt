@@ -25,8 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.seraphim.app.yxsg.ui.components.DonutChart
 import com.seraphim.app.yxsg.ui.components.MealCheckInButton
+import com.seraphim.app.yxsg.ui.components.MonthlyStatsDashboard
 import com.seraphim.app.yxsg.ui.theme.LimitReachedColor
 import com.seraphim.app.yxsg.ui.theme.PageHorizontalPadding
 import com.seraphim.app.yxsg.ui.theme.PageVerticalPadding
@@ -135,7 +135,7 @@ fun CheckInScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(modifier = Modifier.height(Spacing.large))
-                DonutChart(stats = stats)
+                MonthlyStatsDashboard(stats = stats)
             }
         }
 

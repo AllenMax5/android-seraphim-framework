@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
@@ -34,14 +33,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.seraphim.app.yxsg.ui.components.DayStatusIndicator
+import com.seraphim.app.yxsg.ui.components.DayStatusIndicatorV2
+import com.seraphim.app.yxsg.ui.components.MealCheckInLabel
+import com.seraphim.app.yxsg.ui.components.dayCellBackgroundColor
 import com.seraphim.app.yxsg.ui.theme.PageHorizontalPadding
 import com.seraphim.app.yxsg.ui.theme.PageVerticalPadding
 import com.seraphim.app.yxsg.ui.theme.Spacing
@@ -180,9 +180,26 @@ fun CalendarScreen(
                     .padding(Spacing.large),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                LegendItem(indicator = { DayStatusIndicator(count = 0) }, label = "未签到")
-                LegendItem(indicator = { DayStatusIndicator(count = 1) }, label = "1次")
-                LegendItem(indicator = { DayStatusIndicator(count = 2) }, label = "2次")
+                LegendItem(
+                    lunchCheckedIn = false,
+                    dinnerCheckedIn = false,
+                    label = "未签到",
+                )
+                LegendItem(
+                    lunchCheckedIn = true,
+                    dinnerCheckedIn = false,
+                    label = "仅午餐",
+                )
+                LegendItem(
+                    lunchCheckedIn = false,
+                    dinnerCheckedIn = true,
+                    label = "仅晚餐",
+                )
+                LegendItem(
+                    lunchCheckedIn = true,
+                    dinnerCheckedIn = true,
+                    label = "全签到",
+                )
             }
         }
     }
@@ -272,21 +289,23 @@ private fun DayCell(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val count = status?.checkInCount ?: 0
-    val dateDesc = "${day}日${if (count > 0) "，已签到$count 次" else ""}"
+    val lunchCheckedIn = status?.lunchCheckedIn ?: false
+    val dinnerCheckedIn = status?.dinnerCheckedIn ?: false
+    val count = (if (lunchCheckedIn) 1 else 0) + (if (dinnerCheckedIn) 1 else 0)
+    val dateDesc =
+        "${day}日${if (count > 0) "，午餐${if (lunchCheckedIn) "已签到" else "未签到"}，晚餐${if (dinnerCheckedIn) "已签到" else "未签到"}" else ""}"
 
     val backgroundColor = when {
         isSelected -> MaterialTheme.colorScheme.secondaryContainer
-        else -> Color.Transparent
+        else -> dayCellBackgroundColor(lunchCheckedIn, dinnerCheckedIn)
     }
 
     val borderModifier = when {
         isToday -> Modifier.border(
             width = 1.5.dp,
-            color = MaterialTheme.colorScheme.outline,
+            color = MaterialTheme.colorScheme.primary,
             shape = CircleShape,
         )
-
         else -> Modifier
     }
 
@@ -310,26 +329,42 @@ private fun DayCell(
                 fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
                 color = when {
                     isSelected -> MaterialTheme.colorScheme.onSecondaryContainer
-                    isToday -> MaterialTheme.colorScheme.onSurface
+                    isToday -> MaterialTheme.colorScheme.primary
                     else -> MaterialTheme.colorScheme.onSurface
                 },
             )
-            DayStatusIndicator(count = count)
+            Spacer(modifier = Modifier.height(1.dp))
+            // 双点指示器
+            DayStatusIndicatorV2(
+                lunchCheckedIn = lunchCheckedIn,
+                dinnerCheckedIn = dinnerCheckedIn,
+            )
+            // 文字标签（小屏可能不显示，但保留给大屏）
+            if (count > 0) {
+                MealCheckInLabel(
+                    lunchCheckedIn = lunchCheckedIn,
+                    dinnerCheckedIn = dinnerCheckedIn,
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun LegendItem(
-    indicator: @Composable () -> Unit,
+    lunchCheckedIn: Boolean,
+    dinnerCheckedIn: Boolean,
     label: String,
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        indicator()
-        Spacer(modifier = Modifier.size(Spacing.small))
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        DayStatusIndicatorV2(
+            lunchCheckedIn = lunchCheckedIn,
+            dinnerCheckedIn = dinnerCheckedIn,
+        )
+        Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = label,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }

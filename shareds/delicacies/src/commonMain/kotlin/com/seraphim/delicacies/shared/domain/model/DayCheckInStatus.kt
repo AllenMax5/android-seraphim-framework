@@ -9,4 +9,12 @@ data class DayCheckInStatus(
 ) {
     val checkInCount: Int
         get() = (if (lunchCheckedIn) 1 else 0) + (if (dinnerCheckedIn) 1 else 0)
+
+    /**
+     * 获取指定餐次的签到状态
+     */
+    fun isCheckedIn(mealType: MealType): Boolean = when (mealType) {
+        MealType.LUNCH -> lunchCheckedIn
+        MealType.DINNER -> dinnerCheckedIn
+    }
 }
