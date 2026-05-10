@@ -22,16 +22,36 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://repo.platform.here.com/artifactory/open-location-platform") {
+            // HERE SDK requires authentication.
+            // Add these to ~/.gradle/gradle.properties:
+            //   HERE_ACCESS_KEY_ID=your_key_id
+            //   HERE_ACCESS_KEY_SECRET=your_key_secret
+            credentials {
+                username = providers.gradleProperty("HERE_ACCESS_KEY_ID").orNull ?: ""
+                password = providers.gradleProperty("HERE_ACCESS_KEY_SECRET").orNull ?: ""
+            }
+        }
     }
 }
 
 rootProject.name = "android-seraphim-framework"
+include(":apps:mapdemo")
 include(":apps:delicacies")
 include(":apps:pokemon")
 include(":apps:literacy-eval")
 include(":apps:nfc")
 include(":utils")
-include(":core:permissions", ":core:network", ":core:storage")
+include(
+    ":core:permissions",
+    ":core:network",
+    ":core:storage",
+    ":core:map:commons",
+    ":core:map:map-google",
+    ":core:map:map-here",
+    ":core:map:map-yandex",
+    ":core:map:map-tmap"
+)
 include(":shareds:delicacies")
 include(":shareds:pokemon")
 include(":shareds:literacy")
