@@ -21,28 +21,42 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
+        dependencyResolutionManagement {
+            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+            repositories {
+                google()
         mavenCentral()
         maven("https://repo.platform.here.com/artifactory/open-location-platform") {
-            // HERE SDK requires authentication.
-            // Add these to ~/.gradle/gradle.properties:
-            //   HERE_ACCESS_KEY_ID=your_key_id
-            //   HERE_ACCESS_KEY_SECRET=your_key_secret
             credentials {
                 username = providers.gradleProperty("HERE_ACCESS_KEY_ID").orNull ?: ""
                 password = providers.gradleProperty("HERE_ACCESS_KEY_SECRET").orNull ?: ""
+            }
+        }
+                maven("https://maven.pkg.github.com/li-lance/android-seraphim-map") {
+                    credentials {
+                        username = providers.gradleProperty("GITHUB_PACKAGES_USER").orNull ?: ""
+                        password = providers.gradleProperty("GITHUB_PACKAGES_TOKEN").orNull ?: ""
             }
         }
     }
 }
 
 rootProject.name = "android-seraphim-framework"
-// Map modules are managed by repo tool: android-seraphim-map.git → core/map
+        include(":apps:mapdemo")
 include(":apps:delicacies")
 include(":apps:pokemon")
 include(":apps:literacy-eval")
 include(":apps:nfc")
 include(":utils")
 include(":core:permissions", ":core:network", ":core:storage")
+// Map modules managed by repo tool: android-seraphim-map.git → core/map
+        include(
+            ":core:map:commons",
+            ":core:map:map-google",
+            ":core:map:map-here",
+            ":core:map:map-yandex",
+            ":core:map:map-tmap"
+        )
 include(":shareds:delicacies")
 include(":shareds:pokemon")
 include(":shareds:literacy")
