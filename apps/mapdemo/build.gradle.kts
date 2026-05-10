@@ -8,6 +8,7 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         multiDexEnabled = true
+        manifestPlaceholders["MAPS_API_KEY"] = providers.gradleProperty("MAPS_API_KEY").orElse("")
     }
     packaging {
         resources {
