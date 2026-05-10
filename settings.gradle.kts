@@ -36,22 +36,13 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "android-seraphim-framework"
-include(":apps:mapdemo")
+// Map modules are managed by repo tool: android-seraphim-map.git → core/map
 include(":apps:delicacies")
 include(":apps:pokemon")
 include(":apps:literacy-eval")
 include(":apps:nfc")
 include(":utils")
-include(
-    ":core:permissions",
-    ":core:network",
-    ":core:storage",
-    ":core:map:commons",
-    ":core:map:map-google",
-    ":core:map:map-here",
-    ":core:map:map-yandex",
-    ":core:map:map-tmap"
-)
+include(":core:permissions", ":core:network", ":core:storage")
 include(":shareds:delicacies")
 include(":shareds:pokemon")
 include(":shareds:literacy")

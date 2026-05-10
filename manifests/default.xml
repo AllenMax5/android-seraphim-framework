@@ -10,4 +10,5 @@
     <project name="gradle.git" path="gradle" revision="master"/>
     <project name="utils.git" path="utils" revision="master"/>
     <project name="permissions.git" path="core/permissions" revision="master" />
+    <project name="android-seraphim-map.git" path="core/map" revision="master" />
 </manifest>
