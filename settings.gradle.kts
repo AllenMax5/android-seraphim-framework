@@ -21,10 +21,6 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        dependencyResolutionManagement {
-            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-            repositories {
-                google()
         mavenCentral()
         maven("https://repo.platform.here.com/artifactory/open-location-platform") {
             credentials {
@@ -32,31 +28,30 @@ dependencyResolutionManagement {
                 password = providers.gradleProperty("HERE_ACCESS_KEY_SECRET").orNull ?: ""
             }
         }
-                maven("https://maven.pkg.github.com/li-lance/android-seraphim-map") {
-                    credentials {
-                        username = providers.gradleProperty("GITHUB_PACKAGES_USER").orNull ?: ""
-                        password = providers.gradleProperty("GITHUB_PACKAGES_TOKEN").orNull ?: ""
+        maven("https://maven.pkg.github.com/li-lance/android-seraphim-map") {
+            credentials {
+                username = providers.gradleProperty("GITHUB_PACKAGES_USER").orNull ?: ""
+                password = providers.gradleProperty("GITHUB_PACKAGES_TOKEN").orNull ?: ""
             }
         }
     }
 }
 
 rootProject.name = "android-seraphim-framework"
-        include(":apps:mapdemo")
+include(":apps:mapdemo")
 include(":apps:delicacies")
 include(":apps:pokemon")
 include(":apps:literacy-eval")
 include(":apps:nfc")
 include(":utils")
 include(":core:permissions", ":core:network", ":core:storage")
-// Map modules managed by repo tool: android-seraphim-map.git → core/map
-        include(
-            ":core:map:commons",
-            ":core:map:map-google",
-            ":core:map:map-here",
-            ":core:map:map-yandex",
-            ":core:map:map-tmap"
-        )
+include(
+    ":core:map:commons",
+    ":core:map:map-google",
+    ":core:map:map-here",
+    ":core:map:map-yandex",
+    ":core:map:map-tmap"
+)
 include(":shareds:delicacies")
 include(":shareds:pokemon")
 include(":shareds:literacy")
