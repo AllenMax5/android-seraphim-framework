@@ -40,9 +40,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mapFragment = MapFragment().apply {
-            initialize(MapProviderRegistry.instance, MapInitializer.activeProvider)
-        }
+        mapFragment = MapFragment.create(MapInitializer.activeProvider)
         supportFragmentManager.beginTransaction()
             .add(R.id.map_container, mapFragment)
             .commit()
@@ -140,8 +138,10 @@ class MainActivity : AppCompatActivity() {
     private var mapTypeIndex = 0
     private fun cycleMapType() {
         val types = arrayOf(MapType.NORMAL, MapType.SATELLITE, MapType.NORMAL)
-        mapTypeIndex = (mapTypeIndex + 1) % types.size; map.mapType = types[mapTypeIndex]
-        toast("图层: ${types[mapTypeIndex]}")
+        mapTypeIndex = (mapTypeIndex + 1) % types.size
+        // MapType now set via MapStyle.Type in MapOptions
+        // map.camera.mapType is removed; use updateUiSettings or re-init for map type changes
+        toast("图层切换: ${types[mapTypeIndex]} (需通过 MapOptions 重新初始化)")
     }
 
     private fun addRandomMarker() {
