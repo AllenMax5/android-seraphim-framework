@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
 import com.seraphim.core.map.commons.MapFragment
 import com.seraphim.core.map.commons.MapInitializer
@@ -22,15 +23,12 @@ import com.seraphim.core.map.commons.model.MarkerOptions
 import com.seraphim.core.map.commons.model.PolygonOptions
 import com.seraphim.core.map.commons.model.PolylineOptions
 import com.seraphim.core.map.commons.registry.MapProviderRegistry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mapFragment: MapFragment
     private lateinit var map: com.seraphim.core.map.commons.MapInstance
-    private val scope = CoroutineScope(Dispatchers.Main)
     private var markerCount = 0
 
     private var locationCallback: LocationCallback? = null
@@ -50,8 +48,8 @@ class MainActivity : AppCompatActivity() {
             .commit()
 
         setupButtons()
-        scope.launch {
-            map = mapFragment.getMap()
+        lifecycleScope.launch {
+            map = mapFragment.awaitMap()
             setupDemo(map)
         }
     }
