@@ -9,6 +9,7 @@ android {
         versionName = "1.0.0"
         multiDexEnabled = true
         manifestPlaceholders["MAPS_API_KEY"] = providers.gradleProperty("MAPS_API_KEY").orElse("")
+        manifestPlaceholders["AMAP_API_KEY"] = providers.gradleProperty("AMAP_API_KEY").orElse("")
     }
     flavorDimensions += "provider"
     productFlavors {
@@ -16,7 +17,17 @@ android {
         create("google") { dimension = "provider"; applicationIdSuffix = ".google" }
         create("tmap") { dimension = "provider"; applicationIdSuffix = ".tmap" }
         create("yandex") { dimension = "provider"; applicationIdSuffix = ".yandex" }
-        create("here") { dimension = "provider"; applicationIdSuffix = ".here" }
+        create("here") {
+            dimension = "provider"; applicationIdSuffix = ".here"
+            buildConfigField(
+                "String", "HERE_ACCESS_KEY_ID",
+                "\"${providers.gradleProperty("HERE_ACCESS_KEY_ID").orElse("")}\""
+            )
+            buildConfigField(
+                "String", "HERE_ACCESS_KEY_SECRET",
+                "\"${providers.gradleProperty("HERE_ACCESS_KEY_SECRET").orElse("")}\""
+            )
+        }
     }
     packaging {
         resources { excludes.add("/META-INF/{AL2.0,LGPL2.1}") }
