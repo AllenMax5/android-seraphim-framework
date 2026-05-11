@@ -50,7 +50,8 @@ include(
     ":core:map:map-google",
     ":core:map:map-here",
     ":core:map:map-yandex",
-    ":core:map:map-tmap"
+    ":core:map:map-tmap",
+    ":core:map:map-amap"
 )
 include(":shareds:delicacies")
 include(":shareds:pokemon")

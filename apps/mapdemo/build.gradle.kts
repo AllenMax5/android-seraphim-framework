@@ -18,9 +18,11 @@ android {
 }
 dependencies {
     implementation(project(":core:map:commons"))
-    implementation(project(":core:map:map-google"))
+    implementation(project(":core:map:map-amap"))
+    // implementation(project(":core:map:map-google"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation("com.google.android.material:material:1.12.0")
 }
