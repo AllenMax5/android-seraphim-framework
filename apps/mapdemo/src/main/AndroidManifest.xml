@@ -11,13 +11,6 @@
         android:label="Map Demo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--        <meta-data-->
-        <!--            android:name="com.google.android.geo.API_KEY"-->
-        <!--            android:value="${MAPS_API_KEY}" />-->
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="5e368953651696b21da61d8d85a35999" />
-        <service android:name="com.amap.api.location.APSService" />
 
         <activity
             android:name=".MainActivity"
