@@ -1,6 +1,7 @@
 package com.seraphim.app.mapdemo
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
@@ -13,7 +14,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.chip.Chip
 import com.seraphim.core.map.commons.MapFragment
 import com.seraphim.core.map.commons.MapInitializer
-import com.seraphim.core.map.commons.location.LocationCallback
 import com.seraphim.core.map.commons.location.LocationResult
 import com.seraphim.core.map.commons.model.CameraState
 import com.seraphim.core.map.commons.model.CircleOptions
@@ -30,8 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mapFragment: MapFragment
     private lateinit var map: com.seraphim.core.map.commons.MapInstance
     private var markerCount = 0
-
-    private var locationCallback: LocationCallback? = null
     private var locationMarkerId: String? = null
     private var isLocating = false
     private lateinit var locationProvider: com.seraphim.core.map.commons.location.UserLocationProvider
@@ -62,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<Chip>(R.id.btn_animate).setOnClickListener { animateCamera() }
         findViewById<Chip>(R.id.btn_switch).setOnClickListener { cycleProvider() }
         findViewById<Chip>(R.id.btn_info).setOnClickListener { showInfo() }
+        findViewById<Chip>(R.id.btn_search).setOnClickListener { openSearch() }
     }
 
     private fun toggleLocation() {
@@ -82,13 +81,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun startLocation() {
         if (!::map.isInitialized) return
+        if (isLocating) return
         isLocating = true
         map.enableUserLocation(true)
 
         val factory = MapProviderRegistry.instance.get(MapInitializer.activeProvider)
         locationProvider = factory.createUserLocationProvider(this)
-        val cb = LocationCallback { result ->
-            when (result) {
+
+        lifecycleScope.launch {
+            when (val result = locationProvider.requestSingleLocation(timeoutMs = 15000)) {
                 is LocationResult.Success -> {
                     val pos = result.position
                     val latLng = pos.location
@@ -103,35 +104,27 @@ class MainActivity : AppCompatActivity() {
                     )
                     locationMarkerId = marker.id
                     toast("定位成功: ${"%.4f".format(latLng.latitude)}, ${"%.4f".format(latLng.longitude)}")
-                    isLocating = false
                 }
 
                 is LocationResult.PermissionDenied -> {
                     toast("定位权限被拒绝")
-                    isLocating = false
                 }
 
                 is LocationResult.LocationDisabled -> {
                     toast("定位服务未开启")
-                    isLocating = false
                 }
 
                 is LocationResult.Timeout -> {
                     toast("定位超时")
-                    isLocating = false
                 }
             }
+            isLocating = false
         }
-        locationCallback = cb
-        locationProvider.requestLocationUpdates(cb, intervalMs = 0)
     }
 
     private fun stopLocation() {
-        val cb = locationCallback ?: return
-        if (::locationProvider.isInitialized) {
-            locationProvider.removeLocationUpdates(cb)
-        }
-        locationCallback = null
+        // requestSingleLocation is one-shot; no ongoing updates to stop.
+        // Just reset the UI state if needed.
         isLocating = false
     }
 
@@ -191,6 +184,32 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    private fun openSearch() {
+        if (!::map.isInitialized) return
+        val c = map.camera.current.target
+        val intent = Intent(this, SearchActivity::class.java).apply {
+            putExtra(SearchActivity.EXTRA_CENTER_LAT, c.latitude)
+            putExtra(SearchActivity.EXTRA_CENTER_LNG, c.longitude)
+        }
+        startActivityForResult(intent, SEARCH_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SEARCH_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            val lat = data.getDoubleExtra(SearchActivity.EXTRA_RESULT_LAT, 0.0)
+            val lng = data.getDoubleExtra(SearchActivity.EXTRA_RESULT_LNG, 0.0)
+            val name = data.getStringExtra(SearchActivity.EXTRA_RESULT_NAME) ?: ""
+            if (lat != 0.0 || lng != 0.0) {
+                val latLng = LatLng(lat, lng)
+                map.camera.animateTo(latLng, zoom = 16f, durationMs = 1000)
+                markerCount++
+                val marker = map.addMarker(MarkerOptions(latLng, name, "搜索结果"))
+                toast("已定位到: $name")
+            }
+        }
+    }
+
     private suspend fun setupDemo(map: com.seraphim.core.map.commons.MapInstance) {
         val data = DemoData.forProvider(MapInitializer.activeProvider)
         map.camera.moveTo(data.center, 14f)
@@ -230,6 +249,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MapDemo"
+        private const val SEARCH_REQUEST_CODE = 1001
     }
 }
 

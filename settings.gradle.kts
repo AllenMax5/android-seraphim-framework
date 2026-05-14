@@ -34,6 +34,9 @@ dependencyResolutionManagement {
                 password = providers.gradleProperty("GITHUB_PACKAGES_TOKEN").orNull ?: ""
             }
         }
+        // AMap SDK repository
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
+        maven("https://repository.innovation.com.cn/repository/maven-public/")
     }
 }
 

@@ -1,6 +1,19 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.seraphim.android.application)
 }
+
+// Read local.properties for API keys (not tracked by git)
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        load(localFile.inputStream())
+    }
+}
+
+fun localProp(key: String): String = localProperties.getProperty(key, "")
+
 android {
     namespace = "com.seraphim.app.mapdemo"
     defaultConfig {
@@ -8,24 +21,30 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         multiDexEnabled = true
-        manifestPlaceholders["MAPS_API_KEY"] = providers.gradleProperty("MAPS_API_KEY").orElse("")
-        manifestPlaceholders["AMAP_API_KEY"] = providers.gradleProperty("AMAP_API_KEY").orElse("")
+        manifestPlaceholders["MAPS_API_KEY"] = localProp("MAPS_API_KEY")
+        manifestPlaceholders["AMAP_API_KEY"] = localProp("AMAP_API_KEY")
     }
     flavorDimensions += "provider"
     productFlavors {
         create("amap") { dimension = "provider"; applicationIdSuffix = ".amap" }
-        create("google") { dimension = "provider"; applicationIdSuffix = ".google" }
+        create("google") {
+            dimension = "provider"; applicationIdSuffix = ".google"
+            buildConfigField(
+                "String", "GOOGLE_PLACES_API_KEY",
+                "\"${localProp("GOOGLE_PLACES_API_KEY")}\""
+            )
+        }
         create("tmap") { dimension = "provider"; applicationIdSuffix = ".tmap" }
         create("yandex") { dimension = "provider"; applicationIdSuffix = ".yandex" }
         create("here") {
             dimension = "provider"; applicationIdSuffix = ".here"
             buildConfigField(
                 "String", "HERE_ACCESS_KEY_ID",
-                "\"${providers.gradleProperty("HERE_ACCESS_KEY_ID").orElse("")}\""
+                "\"${localProp("HERE_ACCESS_KEY_ID")}\""
             )
             buildConfigField(
                 "String", "HERE_ACCESS_KEY_SECRET",
-                "\"${providers.gradleProperty("HERE_ACCESS_KEY_SECRET").orElse("")}\""
+                "\"${localProp("HERE_ACCESS_KEY_SECRET")}\""
             )
         }
     }

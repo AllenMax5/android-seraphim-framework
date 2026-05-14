@@ -143,6 +143,24 @@
                     android:textAlignment="center"
                     android:checkable="false" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/btn_search"
+                    style="@style/Widget.Material3.Chip.Assist"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="2dp"
+                    android:text="🔍 搜索"
+                    android:textAlignment="center"
+                    android:checkable="false" />
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>
