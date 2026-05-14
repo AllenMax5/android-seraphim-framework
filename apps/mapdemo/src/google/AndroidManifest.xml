@@ -4,6 +4,6 @@
     <application android:label="google-map">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBx5I4SLasT31OHJBpk38wqKkNgiDBZifI" />
+            android:value="${GOOGLE_MAP_KEY}" />
     </application>
 </manifest>
